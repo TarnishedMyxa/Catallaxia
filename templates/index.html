@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent-Based Model Builder</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .form-section {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-align: center;
+        }
+        .form-section h3 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .form-section input[type="submit"] {
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar with Dropdowns -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Catallaxia</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <!-- Model Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="modelDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Model
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="modelDropdown">
+                            <li><a class="dropdown-item" href="#">New Model</a></li>
+                            <li><a class="dropdown-item" href="#">Open Model</a></li>
+                            <li><a class="dropdown-item" href="#">Save Model</a></li>
+                        </ul>
+                    </li>
+                    <!-- Edit Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="editDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Edit
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="editDropdown">
+                            <li><a class="dropdown-item" href="#">Undo</a></li>
+                            <li><a class="dropdown-item" href="#">Redo</a></li>
+                            <li><a class="dropdown-item" href="#">Preferences</a></li>
+                        </ul>
+                    </li>
+                    <!-- View Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="viewDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            View
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="viewDropdown">
+                            <li><a class="dropdown-item" href="#">Grid View</a></li>
+                            <li><a class="dropdown-item" href="#">List View</a></li>
+                            <li><a class="dropdown-item" href="#">Fullscreen</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Agent-Based Model Builder</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-8 form-section">
+                <form action="/submit" method="POST">
+                    <h3>Select Agent</h3>
+                    <div class="input-group mb-3">
+                        <select class="form-select" name="agent">
+                            {% for agent in agents %}
+                            <option value="{{ agent }}">{{ agent }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#addAgentModal">Add Agent</button>
+                        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#editAgentModal">Edit Agent</button>
+                    </div>
+
+                    <h3>Select Type</h3>
+                    <div class="input-group mb-3">
+                        <select class="form-select" name="type">
+                            {% for type in types %}
+                            <option value="{{ type }}">{{ type }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <h3>Select Interaction</h3>
+                    <div class="input-group mb-3">
+                        <select class="form-select" name="interaction">
+                            {% for interaction in interactions %}
+                            <option value="{{ interaction }}">{{ interaction }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <input class="btn btn-primary" type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Agent Modal -->
+    <div class="modal fade" id="addAgentModal" tabindex="-1" aria-labelledby="addAgentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/add_agent" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addAgentModalLabel">Add Agent</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="newAgent" class="form-label">Agent Name</label>
+                            <input type="text" class="form-control" id="newAgent" name="new_agent" placeholder="Enter new agent name">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Agent</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Agent Modal -->
+    <div class="modal fade" id="editAgentModal" tabindex="-1" aria-labelledby="editAgentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/edit_agent" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editAgentModalLabel">Edit Agent</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="editAgent" class="form-label">Agent Name</label>
+                            <input type="text" class="form-control" id="editAgent" name="edit_agent" placeholder="Enter agent name to edit">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Edit Agent</button>
+                    </div>
